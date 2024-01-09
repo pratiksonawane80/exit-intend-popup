@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exit Intend Popup</title>
+</head>
+<body>
+    <h1>Exit Intend Popup</h1>
+   
+   
+</body>
+<script>
+    const style = `
+    *{
+        margin:0px;
+        padding:0px;
+        box-sizing:border-box;
+    }
+    #overlay{
+        background-color:#00000099;
+        position:fixed;
+        inset:0;
+        display:none;
+        width:100%;
+        height:100%;
+        align-items:center;
+        justify-content:center;
+    }
+    #popup{
+        background-color:yellow;
+        padding:2rem;
+        width:30%;
+        position:relative;
+    }
+    #popup label{
+        display:block;
+        margin-bottom:.5rem;
+    }
+    #popup input{
+        display:block;
+        margin-bottom:.5rem;
+        width:100%;
+        padding:1rem;
+    }
+    button{
+        padding:1rem;
+        border-radius:1rem;
+        border:1px solid gray;
+    }
+    #close-btn{
+        position:absolute;
+        right:0;
+        top:0;
+        line-height:15px;
+        padding:10px;
+        display:block;
+        cursor:pointer;
+    }
+    .errorMessage{
+        color:red;
+        font-size:10px;
+    }
+    `
+    const styles = document.createElement("style");
+    styles.textContent = style;
+ 
+    const overlay = document.createElement("div");
+    overlay.setAttribute("id","overlay");
+    overlay.innerHTML = `
+        <div id="popup">
+            <div id="close-btn">&#10006;</div>
+            <form id="form">
+             <div>
+                <label> name </label>
+                <input type="text" id="name"/>
+                <span class="errorMessage"></span>
+            </div>
+ 
+            <div>
+                <label>email</label>
+                <input type="email"id="email"/>
+                <span class="errorMessage"></span>
+            </div>
+ 
+            <div>
+                <label style="display:inline-block">I accept the term and condition</label>
+                <input type="checkbox" id="checkbox" style="width:unset;">
+                <span class="errorMessage"></span>
+            </div>
+                <button type="submit">Submit</button>
+ 
+               
+            </form>
+           
+        </div>
+    `
+    document.body.appendChild(overlay);
+    document.head.appendChild(styles);
+ 
+    const showPopup = ()=>{
+        overlay.style.display = 'flex'
+    }
+ 
+    const hidePopup = ()=>{
+        overlay.style.display = 'none'
+    }
+ 
+    const setErrorMessage = (elem,msg)=>{
+            elem.nextElementSibling.textContent=msg;
+    }
+ 
+    const validateName = (elem)=>{
+        value = elem.value.trim();
+        if(value===""){
+            setErrorMessage(name,"Name is required");
+        } else if(!/^[a-zA-Z ]+$/.test(value)){
+            setErrorMessage(name,"Name can only contains letters and spaces");
+        } else{
+            setErrorMessage(name,"");
+            return true;
+        }
+    }
+ 
+    const validateEmail = (elem)=>{
+        value = elem.value.trim();
+        if(value===""){
+            setErrorMessage(email,"Email is required");
+        } else if(!/^[^\s@]+@[^\s@]+\.[^s@]+$/.test(value)){
+            setErrorMessage(email,"Invalid email format");
+        } else{
+            setErrorMessage(email,"");
+            return true;
+        }
+    }
+ 
+    const validateCheckbox = (elem)=>{
+       
+        if(!elem.checked){
+            setErrorMessage(checkbox,"You must agree to the terms")
+        } else{
+            setErrorMessage(checkbox,"")
+            return true;
+        }
+    }
+ 
+    document.addEventListener('mouseleave',(event)=>{
+        if(event.clientY<=0){
+            showPopup();
+        }
+    })
+ 
+    document.getElementById("close-btn").addEventListener('click',()=>{
+        hidePopup();
+    })
+ 
+    const form =  document.getElementById("form");
+   
+    const name = document.getElementById("name");
+    const email = document.getElementById("email");
+    const checkbox = document.getElementById("checkbox");
+    console.log(checkbox.checked,"chekckc")
+   
+    name.onkeyup = ()=> {validateName(name); console.log('clicked')}
+ 
+    email.onkeyup = ()=> validateEmail(email)
+ 
+    checkbox.onchange = () => validateCheckbox(checkbox)
+ 
+    form.onsubmit = (event)=>{
+ 
+        event.preventDefault();
+ 
+      let isValid = validateName(name) && validateEmail(email) && validateCheckbox(checkbox);
+   
+      validateName(name);
+      validateEmail(email);
+      validateCheckbox(checkbox);
+        if(isValid){
+            hidePopup();
+            alert("Form submitted successfully. Thankyou!");
+ 
+        }
+       
+ 
+    }
+ 
+</script>
+</html>
